@@ -1,4 +1,4 @@
-const { ClientPresence, GatewayIntentBits, Client, Collection } = require('discord.js');
+const { ClientPresence, GatewayIntentBits, Client, Collection, ActivityType } = require('discord.js');
 require('dotenv/config');
 const fs = require('node:fs');
 const path = require('node:path');
@@ -32,9 +32,9 @@ for (const file of commandFiles){
 
 
 client.on('ready', ()=> {
-    console.log('The bot is running!')
+    console.log('The bot is running!');
+    client.user.setActivity('with those 1s and 0s', {type: ActivityType.Playing});
 });
-
 
 client.on('interactionCreate', async interaction => {
     if (!interaction.isChatInputCommand()) return;
@@ -54,6 +54,5 @@ client.on('interactionCreate', async interaction => {
     }
 });
 
-//runCompletion("How are you today?");
 
 client.login(process.env.TOKEN);
