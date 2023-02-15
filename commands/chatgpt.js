@@ -1,10 +1,26 @@
 const {SlashCommandBuilder} = require('discord.js');
 const {Configuration, OpenAIApi} = require("openai");
 
+async function chatGPT(prompt, interaction){
+    const {ChatGPTAPI} = await import('chatgpt');
+    const api = new ChatGPTAPI({apiKey:process.env.chatGPT, debug:false});
+    try{
+        const res = await api.sendMessage(prompt, {onProgress: (partialResponse) => 
+        interaction.editReply(`${interaction.member.displayName} asked: ${prompt}\n━━━━━━━━━━━━━━━━━━━━━━━━━    [｡◕‿◕｡]    ━━━━━━━━━━━━━━━━━━━━━━━━━\n${partialResponse.text}\n\n━━━━━━━━━━━━━━━━━━━━━━━━━    [｡◕‿◕｡]    ━━━━━━━━━━━━━━━━━━━━━━━━━`)
+        });
+    }
+    catch(error){
+        interaction.editReply(`${interaction.member.displayName} asked: ${prompt}\n━━━━━━━━━━━━━━━━━━━━━━━━━    [｡x‿x｡]    ━━━━━━━━━━━━━━━━━━━━━━━━━\nSorry, something went wrong..\n\n━━━━━━━━━━━━━━━━━━━━━━━━━    [｡x‿x｡]    ━━━━━━━━━━━━━━━━━━━━━━━━━`)
+    }
+}
+
 const configuration = new Configuration({
     apiKey:process.env.chatGPT,
 });
 const openai = new OpenAIApi(configuration);
+
+
+let prevUser = "";
 
 async function runCompletion (input, inputModel) {
     console.log(`INPUT:    ${input}`);
@@ -16,6 +32,7 @@ async function runCompletion (input, inputModel) {
     console.log(`CREATING COMPLETION: ${completion.data.choices[0].text}`)
     return (completion.data.choices[0].text);
 }
+
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -30,6 +47,7 @@ module.exports = {
             .setDescription("Do you want to use a specific AI model?")
             .setRequired(false)
             .addChoices(
+                { name: 'TEXT: chatGPT(default)', value: 'chatgpt'},
                 { name: 'TEXT: davinci-003(default)', value: 'text-davinci-003'},
                 { name: 'TEXT: curie-001', value: 'text-curie-001'},
                 { name: 'TEXT: babbage-001', value: 'text-babbage-001'},
@@ -39,22 +57,30 @@ module.exports = {
             )),
     async execute(interaction){
         const prompt = interaction.options.getString('prompt');
-        const model = interaction.options.getString('model') ?? 'text-davinci-003';
+        const model = interaction.options.getString('model') ?? 'chatgpt';
         let output = "";
+        
         console.log(`PROMPT:  ${prompt}`);
         await interaction.deferReply({ephemeral:false});
         try{
-            output = await runCompletion(prompt, model);
-            if (model.includes("code")){
-                output = `\`\`\` ${output} \`\`\``;
+            if (model != 'chatgpt'){
+                output = await runCompletion(prompt, model);
+                if (model.includes("code")){
+                    output = `\`\`\` ${output} \`\`\``;
+                }
+                if (output.length > 2000){
+                    output = "My response exceeds discord's character limit, try again with a less complex prompt.";
+                }
+                interaction.editReply(`${interaction.member.displayName} asked: ${prompt}\n━━━━━━━━━━━━━━━━━━━━━━━━━    [｡◕‿◕｡]    ━━━━━━━━━━━━━━━━━━━━━━━━━\n${output}\n\n━━━━━━━━━━━━━━━━━━━━━━━━━    [｡◕‿◕｡]    ━━━━━━━━━━━━━━━━━━━━━━━━━`);
             }
-            if (output.length > 2000){
-                output = "My response exceeds the character limit, try again with a less complex prompt.";
+            else{
+                    interaction.editReply(`${interaction.member.displayName} asked: ${prompt}\n━━━━━━━━━━━━━━━━━━━━━━━━━    [｡◕‿◕｡]    ━━━━━━━━━━━━━━━━━━━━━━━━━\n...\n\n━━━━━━━━━━━━━━━━━━━━━━━━━    [｡◕‿◕｡]    ━━━━━━━━━━━━━━━━━━━━━━━━━`);
+                    chatGPT(prompt, interaction);
             }
         }
         catch(error){
-            output = "My response exceeds the character limit, try again with a less complex prompt."
+            output = "My response exceeds discord's character limit, try again with a less complex prompt."
+            //console.log(error);
         }
-        interaction.editReply(`${interaction.member.displayName} asked: ${prompt}\n━━━━━━━━━━━━━━━━━━━━━━━━━    [｡◕‿◕｡]    ━━━━━━━━━━━━━━━━━━━━━━━━━\n${output}\n━━━━━━━━━━━━━━━━━━━━━━━━━    [｡◕‿◕｡]    ━━━━━━━━━━━━━━━━━━━━━━━━━`);
     }
 }

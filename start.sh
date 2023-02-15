@@ -4,7 +4,7 @@
 	while true
 	do
 		# Start bot
-        git pull
+        git pull --force
 		node .
 		    echo "Recovering from crash!"
         echo "If you wish to completely stop the bot process now, press CTRL-C before the time is up!"

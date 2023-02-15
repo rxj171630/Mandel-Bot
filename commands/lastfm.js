@@ -51,6 +51,10 @@ module.exports = {
             artist = myJson.recenttracks.track[0].artist['#text'];
             album = myJson.recenttracks.track[0].album['#text'];
             art = myJson.recenttracks.track[0].image[3]['#text'];
+            if (album == ""){
+                album = "Not Found";
+                art = 'https://community.spotify.com/t5/image/serverpage/image-id/55829iC2AD64ADB887E2A5/image-size/large?v=v2&px=999'
+            }
 
             const embed = new EmbedBuilder()
             .setColor(`#012394`)
@@ -85,8 +89,12 @@ module.exports = {
             query1 = `https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=${apiKey}&artist=${artist}&track=${songName}&format=json`
             resp1 = await fetch(query1);
             myJson1 = await resp1.json();
-            art = myJson1.track.album.image[3]['#text'];
-
+            try{
+                art = myJson1.track.album.image[3]['#text'];
+            }
+            catch(error){
+                art = 'https://community.spotify.com/t5/image/serverpage/image-id/55829iC2AD64ADB887E2A5/image-size/large?v=v2&px=999'
+            }
             const embed = new EmbedBuilder()
             .setTitle(`Songs similar to: ${songName} by ${artist}`)
             .setColor(`#012394`)
@@ -96,7 +104,12 @@ module.exports = {
             queryArt = `https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=${apiKey}&artist=${myJson.similartracks.track[0].artist.name}&track=${myJson.similartracks.track[0].name}&autocorrect=1&format=json`
             respArt = await fetch(queryArt);
             myJsonArt = await respArt.json();
-            art = myJsonArt.track.album.image[3]['#text'];
+            try{
+                art = myJsonArt.track.album.image[3]['#text'];
+            }
+            catch(error){
+                art = 'https://community.spotify.com/t5/image/serverpage/image-id/55829iC2AD64ADB887E2A5/image-size/large?v=v2&px=999'
+            }
             embeds = [embed]
 
             for (i = 0; i < 5; i++){
