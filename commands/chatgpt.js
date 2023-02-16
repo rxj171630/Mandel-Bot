@@ -1,16 +1,40 @@
 const {SlashCommandBuilder} = require('discord.js');
 const {Configuration, OpenAIApi} = require("openai");
 
+
+
 async function chatGPT(prompt, interaction){
     const {ChatGPTAPI} = await import('chatgpt');
     const api = new ChatGPTAPI({apiKey:process.env.chatGPT, debug:false});
+    let res = ""
+    let conversationID = "";
+    let parentID = "";
     try{
-        const res = await api.sendMessage(prompt, {onProgress: (partialResponse) => 
-        interaction.editReply(`${interaction.member.displayName} asked: ${prompt}\n━━━━━━━━━━━━━━━━━━━━━━━━━    [｡◕‿◕｡]    ━━━━━━━━━━━━━━━━━━━━━━━━━\n${partialResponse.text}\n\n━━━━━━━━━━━━━━━━━━━━━━━━━    [｡◕‿◕｡]    ━━━━━━━━━━━━━━━━━━━━━━━━━`)
-        });
+        if (parentID != undefined){
+            console.log("NO PREV CONVO");
+           res = await api.sendMessage(prompt,  {conversationId: conversationID, parentMessageId: parentID,onProgress: (partialResponse) => 
+               interaction.editReply(`${interaction.member.displayName} asked: ${prompt}\n━━━━━━━━━━━━━━━━━━━━━━━━━    [｡◕‿◕｡]    ━━━━━━━━━━━━━━━━━━━━━━━━━\n${partialResponse.text} [...]\n\n━━━━━━━━━━━━━━━━━━━━━━━━━    [｡◕‿◕｡]    ━━━━━━━━━━━━━━━━━━━━━━━━━`)
+           });
+        }
+        else{
+           res = await api.sendMessage(prompt,  {onProgress: (partialResponse) => 
+               interaction.editReply(`${interaction.member.displayName} asked: ${prompt}\n━━━━━━━━━━━━━━━━━━━━━━━━━    [｡◕‿◕｡]    ━━━━━━━━━━━━━━━━━━━━━━━━━\n${partialResponse.text} [...]\n\n━━━━━━━━━━━━━━━━━━━━━━━━━    [｡◕‿◕｡]    ━━━━━━━━━━━━━━━━━━━━━━━━━`)
+           });
+        }
+        // res = await api.sendMessage('What is OpenAI?')
+        // interaction.editReply(res.text);
+        // res = await api.sendMessage('Can you expand on that?', {
+        //     conversationId: res.conversationId,
+        //     parentMessageId: res.id
+        // })
+        // setTimeout(() => {interaction.editReply(res.text);}, 5000);
+        conversationID = res.conversationId;
+        parentID = res.id;
+        interaction.editReply(`${interaction.member.displayName} asked: ${prompt}\n━━━━━━━━━━━━━━━━━━━━━━━━━    [｡◕‿◕｡]    ━━━━━━━━━━━━━━━━━━━━━━━━━\n${res.text}\n\n━━━━━━━━━━━━━━━━━━━━━━━━━    [｡◕‿◕｡]    ━━━━━━━━━━━━━━━━━━━━━━━━━`)
     }
     catch(error){
         interaction.editReply(`${interaction.member.displayName} asked: ${prompt}\n━━━━━━━━━━━━━━━━━━━━━━━━━    [｡x‿x｡]    ━━━━━━━━━━━━━━━━━━━━━━━━━\nSorry, something went wrong..\n\n━━━━━━━━━━━━━━━━━━━━━━━━━    [｡x‿x｡]    ━━━━━━━━━━━━━━━━━━━━━━━━━`)
+        console.log(error);
     }
 }
 
@@ -18,9 +42,6 @@ const configuration = new Configuration({
     apiKey:process.env.chatGPT,
 });
 const openai = new OpenAIApi(configuration);
-
-
-let prevUser = "";
 
 async function runCompletion (input, inputModel) {
     console.log(`INPUT:    ${input}`);

@@ -100,12 +100,11 @@ module.exports = {
             .setColor(`#012394`)
             .setThumbnail()
 
-
+            try{
             queryArt = `https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=${apiKey}&artist=${myJson.similartracks.track[0].artist.name}&track=${myJson.similartracks.track[0].name}&autocorrect=1&format=json`
             respArt = await fetch(queryArt);
             myJsonArt = await respArt.json();
-            try{
-                art = myJsonArt.track.album.image[3]['#text'];
+            art = myJsonArt.track.album.image[3]['#text'];
             }
             catch(error){
                 art = 'https://community.spotify.com/t5/image/serverpage/image-id/55829iC2AD64ADB887E2A5/image-size/large?v=v2&px=999'
