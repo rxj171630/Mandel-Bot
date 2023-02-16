@@ -12,8 +12,13 @@ async function fetchArt(id, myJson){
     queryArt = `https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=${apiKey}&artist=${artist}&track=${track}&autocorrect=1&format=json`;
     respArt = await fetch(queryArt);
     myJsonArt = await respArt.json();
-    console.log(`song: ${myJson.similartracks.track[id].name} artist: ${myJson.similartracks.track[id].artist.name} ${myJsonArt.track.album.image[3]['#text']}`);
-    art = myJsonArt.track.album.image[3]['#text'];
+    try{
+        console.log(`song: ${myJson.similartracks.track[id].name} artist: ${myJson.similartracks.track[id].artist.name} ${myJsonArt.track.album.image[3]['#text']}`);
+        art = myJsonArt.track.album.image[3]['#text'];
+    }
+    catch(error){
+        art = 'https://community.spotify.com/t5/image/serverpage/image-id/55829iC2AD64ADB887E2A5/image-size/large?v=v2&px=999'
+    }
     return art;
 }
 
