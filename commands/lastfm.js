@@ -18,6 +18,7 @@ async function fetchArt(id, myJson){
     }
     catch(error){
         art = 'https://community.spotify.com/t5/image/serverpage/image-id/55829iC2AD64ADB887E2A5/image-size/large?v=v2&px=999'
+        console.log(`song: ${myJson.similartracks.track[id].name} artist: ${myJson.similartracks.track[id].artist.name} ${art}`);
     }
     return art;
 }
