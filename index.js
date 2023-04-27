@@ -1,58 +1,96 @@
-const { ClientPresence, GatewayIntentBits, Client, Collection, ActivityType } = require('discord.js');
-require('dotenv/config');
-const fs = require('node:fs');
-const path = require('node:path');
+const {
+  ClientPresence,
+  GatewayIntentBits,
+  Client,
+  Collection,
+  ActivityType,
+} = require("discord.js");
+require("dotenv/config");
+const fs = require("node:fs");
+const path = require("node:path");
+const { stripIndent } = require("common-tags");
+const colors = require("colors");
+const ms = require("ms");
+
+const giveaways = require("./modules/giveaways.js");
+const autopublish = require("./modules/autopublish.js");
+const unlock = require("./modules/unlock.js");
 
 const client = new Client({
-    intents: [
-        GatewayIntentBits.Guilds,
-        GatewayIntentBits.GuildMessages,
-        GatewayIntentBits.MessageContent,
-        GatewayIntentBits.GuildMembers
-    ]
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.GuildMessageReactions,
+  ],
 });
 
 client.commands = new Collection();
 
+const commandsPath = path.join(__dirname, "commands");
+const commandFiles = fs
+  .readdirSync(commandsPath)
+  .filter((file) => file.endsWith(".js"));
 
-const commandsPath = path.join(__dirname, 'commands');
-const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+for (const file of commandFiles) {
+  const filePath = path.join(commandsPath, file);
+  const command = require(filePath);
 
-for (const file of commandFiles){
-    const filePath = path.join(commandsPath, file);
-    const command = require(filePath);
-
-    if ('data' in command && 'execute' in command){
-        client.commands.set(command.data.name, command);
-    }
-    else {
-        console.log('[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.');
-    }
+  if ("data" in command && "execute" in command) {
+    client.commands.set(command.data.name, command);
+  } else {
+    console.log(
+      '[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.'
+    );
+  }
 }
 
+console.log(
+  stripIndent`********************************************`.magenta.bold
+);
+console.log(
+  stripIndent`    ▪                                          ▪
+      ░█▄█░█▀█░█▀█░█▀▄░█▀▀░█░░░░░░░█▀▄░█▀█░▀█▀ 
+      ░█░█░█▀█░█░█░█░█░█▀▀░█░░░▄▄▄░█▀▄░█░█░░█░
+      ░▀░▀░▀░▀░▀░▀░▀▀░░▀▀▀░▀▀▀░░░░░▀▀░░▀▀▀░░▀░         
+    ▪ by Rahul Javalagi - github.com/rxj171630 ▪`.blue
+);
+console.log(
+  stripIndent`********************************************`.magenta.bold
+);
 
-client.on('ready', ()=> {
-    console.log('The bot is running!');
-    client.user.setActivity('with those 1s and 0s', {type: ActivityType.Playing});
+client.on("ready", () => {
+  client.user.setActivity("with those 1s and 0s", {
+    type: ActivityType.Playing,
+  });
+  setTimeout(() => {
+    autopublish(client);
+    giveaways(client);
+    unlock(client);
+    console.log(stripIndent`Ready to go!`.green.bold);
+  }, ms("1s"));
 });
 
-client.on('interactionCreate', async interaction => {
-    if (!interaction.isChatInputCommand()) return;
+client.on("interactionCreate", async (interaction) => {
+  if (!interaction.isChatInputCommand()) return;
 
-    const command = interaction.client.commands.get(interaction.commandName);
+  const command = interaction.client.commands.get(interaction.commandName);
 
-    if(!command){
-        console.error(`No command matching ${interaction.commandName} was found.`);
-        return;
-    }
+  if (!command) {
+    console.error(`No command matching ${interaction.commandName} was found.`);
+    return;
+  }
 
-    try{
-        await command.execute(interaction);
-    } catch (error){
-        console.error(error);
-        await interaction.reply({content: 'There was an error executing this command!', ephemeral: true});
-    }
+  try {
+    await command.execute(interaction);
+  } catch (error) {
+    console.error(error);
+    await interaction.reply({
+      content: "There was an error executing this command!",
+      ephemeral: true,
+    });
+  }
 });
-
 
 client.login(process.env.TOKEN);
