@@ -68,8 +68,10 @@ client.on("ready", () => {
     autopublish(client);
     giveaways(client);
     unlock(client);
-    console.log(stripIndent`Ready to go!`.green.bold);
   }, ms("1s"));
+  setTimeout(() => {
+    console.log(stripIndent`Ready to go!`.green.bold);
+  }, ms("3s"));
 });
 
 client.on("interactionCreate", async (interaction) => {
