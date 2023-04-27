@@ -90,7 +90,7 @@ module.exports = {
           { name: "CODE: cushman-001", value: "code-cushman-001" }
         )
     ),
-  async execute(interaction) {
+  async execute(client, interaction) {
     const prompt = interaction.options.getString("prompt");
     const model = interaction.options.getString("model") ?? "chatgpt";
     let output = "";
