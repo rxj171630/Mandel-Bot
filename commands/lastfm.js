@@ -61,7 +61,7 @@ module.exports = {
             .setRequired(true)
         )
     ),
-  async execute(interaction) {
+  async execute(client, interaction) {
     if (interaction.options.getSubcommand() === "listening") {
       const username = interaction.options.getString("username");
       query = `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${username}&api_key=${apiKey}&format=json`;
