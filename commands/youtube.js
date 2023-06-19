@@ -5,7 +5,6 @@ const {
   ActionRowBuilder,
 } = require("discord.js");
 const { EmbedBuilder } = require("discord.js");
-const youtubeSchema = require("../schemas/youtubeSchema.js");
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("youtube")
@@ -43,34 +42,31 @@ module.exports = {
     const channel = interaction.options.getChannel("channel");
 
     console.log(`ID: ${id}`);
-    console.log(`Channel: ${channel.id}`);
+
     if (interaction.options.getSubcommand() === "subscribe") {
-      const data = await youtubeSchema.findOne({
-        ID: id,
+      console.log(`Channel: ${channel.id}`);
+      var checkError = false;
+      await interaction.reply({ content: `Processing...`, ephemeral: true });
+      console.log("Subscribed");
+      client.Notifier.addNotifier(id, channel).catch(async (e) => {
+        checkError = true;
+        await interaction.editReply(`${e}`);
+        return;
       });
 
-      if (!data) {
-        youtubeSchema
-          .create({
-            ID: id,
-            Channel: channel.id,
-          })
-          .then((result) => {
-            console.log(result);
-          });
-        client.Notifier.addChannels([id]);
-        await interaction.reply(
-          `Sucessfully subscribed, uploads will sent to ${channel}`
-        );
+      if (!checkError) {
+        await interaction.editReply({
+          content: `Sucessfully subscribed, uploads will sent to ${channel}`,
+          ephemeral: true,
+        });
       }
     } else if (interaction.options.getSubcommand() === "unsubscribe") {
       console.log("Unsubscribed");
-      youtubeSchema.deleteMany({ ID: `${id}` }).then(
-        client.Notifier.removeChannels([id]),
+      client.Notifier.removeNotifier(id),
         await interaction.reply({
           content: "Successfully unsubscribed",
-        })
-      );
+          ephemeral: true,
+        });
     }
   },
 };
