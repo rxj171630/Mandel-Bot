@@ -11,10 +11,12 @@ const path = require("node:path");
 const { stripIndent } = require("common-tags");
 const colors = require("colors");
 const ms = require("ms");
+const mongoose = require("mongoose");
 
 const giveaways = require("./modules/giveaways.js");
 const autopublish = require("./modules/autopublish.js");
 const unlock = require("./modules/unlock.js");
+const youtube = require("./modules/youtube.js");
 
 const client = new Client({
   intents: [
@@ -60,14 +62,28 @@ console.log(
   stripIndent`********************************************`.magenta.bold
 );
 
+async function startDatabase() {
+  if (!process.env.mongoDBURI) return;
+  await mongoose.connect(process.env.mongoDBURI, {
+    keepAlive: true,
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+  if (mongoose.connect) {
+    console.log("🔗 | Connected to Database");
+  }
+}
+
 client.on("ready", () => {
   client.user.setActivity("with those 1s and 0s", {
     type: ActivityType.Playing,
   });
   setTimeout(() => {
+    startDatabase();
     autopublish(client);
     giveaways(client);
     unlock(client);
+    youtube(client);
   }, ms("1s"));
   setTimeout(() => {
     console.log(stripIndent`Ready to go!`.green.bold);
