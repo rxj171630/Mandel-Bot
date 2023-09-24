@@ -1,5 +1,5 @@
 const ms = require("ms");
-setTimeout(() => console.log("Enabled giveaways module"), ms("2 sec"));
+setTimeout(() => console.log("✅ | Enabled giveaways module"), ms("2 sec"));
 
 module.exports = (client) => {
   const { GiveawaysManager } = require("discord-giveaways");

@@ -1,7 +1,7 @@
 const ms = require("ms");
 
 const memberID = process.env.memberID;
-setTimeout(() => console.log("Enabled unlock module"), ms("2 sec"));
+setTimeout(() => console.log("✅ | Enabled unlock module"), ms("2 sec"));
 
 module.exports = (client) => {
   client.on("interactionCreate", async (interaction) => {

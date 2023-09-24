@@ -16,7 +16,7 @@ const mongoose = require("mongoose");
 const giveaways = require("./modules/giveaways.js");
 const autopublish = require("./modules/autopublish.js");
 const unlock = require("./modules/unlock.js");
-const youtube = require("./modules/youtube.js");
+//const youtube = require("./modules/youtube.js");
 
 const client = new Client({
   intents: [
@@ -83,7 +83,7 @@ client.on("ready", () => {
     autopublish(client);
     giveaways(client);
     unlock(client);
-    youtube(client);
+    //youtube(client);
   }, ms("1s"));
   setTimeout(() => {
     console.log(stripIndent`Ready to go!`.green.bold);

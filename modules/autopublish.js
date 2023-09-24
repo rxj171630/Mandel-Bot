@@ -1,5 +1,5 @@
 const ms = require("ms");
-setTimeout(() => console.log("Enabled auto-publish module"), ms("2 sec"));
+setTimeout(() => console.log("✅ | Enabled auto-publish module"), ms("2 sec"));
 
 module.exports = (client) => {
   //Auto publisher

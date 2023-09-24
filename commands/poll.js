@@ -2,7 +2,7 @@ const { SlashCommandBuilder } = require("discord.js");
 const Polls = require("discord-polls");
 const ms = require("ms");
 
-setTimeout(() => console.log("Enabled poll module"), ms("2 sec"));
+setTimeout(() => console.log("✅ | Enabled poll module"), ms("2 sec"));
 
 module.exports = {
   data: new SlashCommandBuilder()

@@ -1,7 +1,7 @@
 const ms = require("ms");
 const youtube = require("youtube-alert");
 
-setTimeout(() => console.log("Enabled youtube module"), ms("2 sec"));
+setTimeout(() => console.log("✅ | Enabled youtube module"), ms("2 sec"));
 
 module.exports = (client) => {
   client.YoutubeClient = new Youtube();

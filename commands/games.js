@@ -6,7 +6,7 @@ const {
 const ms = require("ms");
 const { SlashCommandBuilder } = require("discord.js");
 
-setTimeout(() => console.log("Enabled games module"), ms("2 sec"));
+setTimeout(() => console.log("✅ | Enabled games module"), ms("2 sec"));
 
 module.exports = {
   data: new SlashCommandBuilder()

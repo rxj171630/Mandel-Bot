@@ -3,7 +3,7 @@ const { EmbedBuilder } = require("discord.js");
 const apiKey = process.env.lastFM;
 const ms = require("ms");
 
-setTimeout(() => console.log("Enabled lastfm module"), ms("2 sec"));
+setTimeout(() => console.log("✅ | Enabled lastfm module"), ms("2 sec"));
 
 async function fetchArt(id, myJson) {
   artist = myJson.similartracks.track[id].artist.name;

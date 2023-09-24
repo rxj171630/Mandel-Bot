@@ -2,7 +2,7 @@ const { SlashCommandBuilder } = require("discord.js");
 const { Configuration, OpenAIApi } = require("openai");
 const ms = require("ms");
 
-setTimeout(() => console.log("Enabled chatgpt module"), ms("2 sec"));
+setTimeout(() => console.log("✅ | Enabled chatgpt module"), ms("2 sec"));
 
 async function chatGPT(prompt, interaction) {
   const { ChatGPTAPI } = await import("chatgpt");
