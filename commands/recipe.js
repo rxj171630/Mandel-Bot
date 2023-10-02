@@ -19,7 +19,7 @@ module.exports = {
           option
             .setName("category")
             .setDescription("What category?")
-            .setRequired(false)
+            .setRequired(true)
             .addChoices(
               { name: "Beef", value: "beef" },
               { name: "Chicken", value: "chicken" },
