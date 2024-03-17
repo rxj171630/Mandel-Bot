@@ -90,14 +90,6 @@ module.exports = {
       let birthdayMonth = interaction.options.getString("month");
       let birthdayYear = interaction.options.getInteger("year");
 
-      // console.log(
-      //   await birthdaySchema.findOne({
-      //     GuildID: guildID,
-      //     ChannelID: channelID,
-      //     User: user,
-      //   })
-      // );
-
       if (
         !data ||
         !(await birthdaySchema.findOne({
@@ -160,7 +152,7 @@ module.exports = {
 
           await embeds.push(
             new EmbedBuilder()
-              .setTitle(`${member.displayName}`)
+              .setTitle(`${await member.displayName}`)
               .setColor("Grey")
               .addFields(
                 {
