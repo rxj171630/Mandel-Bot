@@ -10,8 +10,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@gonetone/get-youtube-id-by-url": "^1.0.0",
-    "chatgpt": "^4.4.0",
     "colors": "^1.4.0",
     "common-tags": "^1.8.2",
     "discord-gamecord": "^4.4.0",
@@ -19,9 +17,11 @@
     "discord-polls": "^1.1.1",
     "discord.js": "^14.7.1",
     "dotenv": "^16.0.3",
+    "make": "^0.0.0",
     "mongoose": "^7.3.0",
     "ms": "^2.1.3",
-    "openai": "^3.1.0",
-    "youtube-notification-module": "^1.1.0"
+    "node-cron": "^3.0.3",
+    "quick.db": "^9.1.7",
+    "yt-notifier": "^2.1.0"
   }
 }

@@ -16,7 +16,10 @@ const mongoose = require("mongoose");
 const giveaways = require("./modules/giveaways.js");
 const autopublish = require("./modules/autopublish.js");
 const unlock = require("./modules/unlock.js");
-//const youtube = require("./modules/youtube.js");
+const youtube = require("./modules/youtube.js");
+const birthday = require("./modules/birthday.js");
+
+
 
 const client = new Client({
   intents: [
@@ -27,6 +30,7 @@ const client = new Client({
     GatewayIntentBits.GuildMessageReactions,
   ],
 });
+
 
 client.commands = new Collection();
 
@@ -65,7 +69,6 @@ console.log(
 async function startDatabase() {
   if (!process.env.mongoDBURI) return;
   await mongoose.connect(process.env.mongoDBURI, {
-    keepAlive: true,
     useNewUrlParser: true,
     useUnifiedTopology: true,
   });
@@ -83,7 +86,8 @@ client.on("ready", () => {
     autopublish(client);
     giveaways(client);
     unlock(client);
-    //youtube(client);
+    youtube(client);
+    birthday(client);
   }, ms("1s"));
   setTimeout(() => {
     console.log(stripIndent`Ready to go!`.green.bold);

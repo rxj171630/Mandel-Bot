@@ -1,12 +1,18 @@
 const ms = require("ms");
-const youtube = require("youtube-alert");
-
-setTimeout(() => console.log("✅ | Enabled youtube module"), ms("2 sec"));
+const { Notify, TwitchExtension } = require("yt-notifier");
+const api = process.env.youtubeAPI;
+const youtubeSchema = require("../schemas/youtubeSchema.js");
 
 module.exports = (client) => {
-  client.YoutubeClient = new Youtube();
+  client.notify = new Notify({
+    apiKey: api,
+  });
 
-  client.YoutubeClient.on("newPost", (client, data) => {
-    console.log(data);
+  client.notify.on("ready", async () => {
+    setTimeout(() => console.log("✅ | Enabled youtube module"), ms("0.5 sec"));
+  });
+
+  client.notify.on("newVideo", async (items) => {
+    console.log(items);
   });
 };

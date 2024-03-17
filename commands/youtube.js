@@ -15,8 +15,8 @@ module.exports = {
         .setDescription("Subscribe to a YouTube channel")
         .addStringOption((option) =>
           option
-            .setName("channel-id")
-            .setDescription("Youtube Channel ID to subscribe to")
+            .setName("channel-link")
+            .setDescription("Youtube Channel link to subscribe to")
             .setRequired(true)
         )
         .addChannelOption((option) =>
@@ -32,41 +32,33 @@ module.exports = {
         .setDescription("Subscribe to a YouTube channel")
         .addStringOption((option) =>
           option
-            .setName("channel-id")
-            .setDescription("Youtube Channel ID to unsubscribe from.")
+            .setName("channel-link")
+            .setDescription("Youtube Channel link to unsubscribe from.")
             .setRequired(true)
         )
     ),
   async execute(client, interaction) {
-    const id = `${interaction.options.getString("channel-id")}`;
-    const channel = interaction.options.getChannel("channel");
-
-    console.log(`ID: ${id}`);
-
     if (interaction.options.getSubcommand() === "subscribe") {
-      console.log(`Channel: ${channel.id}`);
-      var checkError = false;
-      await interaction.reply({ content: `Processing...`, ephemeral: true });
-      console.log("Subscribed");
-      client.Notifier.addNotifier(id, channel).catch(async (e) => {
-        checkError = true;
-        await interaction.editReply(`${e}`);
-        return;
-      });
+      const ytlink = `${interaction.options.getString("channel-link")}`;
+      const channel = interaction.options.getChannel("channel");
 
-      if (!checkError) {
-        await interaction.editReply({
-          content: `Sucessfully subscribed, uploads will sent to ${channel}`,
-          ephemeral: true,
-        });
-      }
+      await interaction.reply("Processing...");
+
+      console.log(`YT Link: ${ytlink}`);
+      console.log(`Channel: ${channel}`);
+      const id = await client.notify.getChannelId(ytlink);
+      console.log(`Channel ID: ${id}`);
+      await client.notify.createListener({ channelId: id });
+
+      await interaction.editReply({
+        content: `Sucessfully subscribed`,
+        ephemeral: true,
+      });
     } else if (interaction.options.getSubcommand() === "unsubscribe") {
+      const ytlink = `${interaction.options.getString("channel-link")}`;
+      const id = await client.notify.getChannelId(ytlink);
+      await client.notify.stopListener({ channelId: id });
       console.log("Unsubscribed");
-      client.Notifier.removeNotifier(id),
-        await interaction.reply({
-          content: "Successfully unsubscribed",
-          ephemeral: true,
-        });
     }
   },
 };
