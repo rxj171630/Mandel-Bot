@@ -127,7 +127,7 @@ module.exports = {
           GuildID: guildID,
         }))
       ) {
-        embeds = [];
+        embed = [];
         await interaction.guild.members.fetch();
 
         let present_date = new Date();
@@ -141,7 +141,7 @@ module.exports = {
             i.Day
           );
           if (
-            present_date.getMonth() == client.months.indexOf(i.Month) &&
+            present_date.getMonth() >= client.months.indexOf(i.Month) &&
             present_date.getDate() >= i.Day
           ) {
             birthday.setFullYear(birthday.getFullYear() + 1);
@@ -150,9 +150,9 @@ module.exports = {
             (birthday.getTime() - present_date.getTime()) / ms("1 day")
           );
 
-          await embeds.push(
+          await embed.push(
             new EmbedBuilder()
-              .setTitle(`${await member.displayName}`)
+              .setTitle(`${member.displayName}`)
               .setColor("Grey")
               .addFields(
                 {
@@ -163,7 +163,7 @@ module.exports = {
                   inline: false,
                 },
                 {
-                  name: "Days until next Birthday:",
+                  name: "Days Until Next Birthday:",
                   value: `${daysUntilNext}`,
                   inline: false,
                 }
@@ -174,7 +174,7 @@ module.exports = {
 
         await interaction.reply({
           content: "## Registered birthdays: ##",
-          embeds: embeds,
+          embeds: embed,
           ephemeral: true,
         });
       } else {
